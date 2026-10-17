@@ -46,7 +46,7 @@ For the default configuration:
 
 
 
-# UART Transmitter (Verilog)
+# UART Transmitter 
 
 ## UART Frame Format
 
@@ -99,3 +99,53 @@ The parity bit is calculated using:
 
 ```verilog
 parity_bit <= ~(^tx_data);
+
+
+# UART Receiver 
+
+ tick-based reception timing
+- One-cycle reception completion pulse
+- Synchronous active-high reset
+
+## UART Frame Format
+
+The receiver expects an 11-bit UART frame.
+
+| Field | Size | Description |
+|---|---:|---|
+| Start Bit | 1 bit | Logic `0` |
+| Data Bits | 8 bits | Received LSB first |
+| Parity Bit | 1 bit | Odd parity |
+| Stop Bit | 1 bit | Logic `1` |
+
+## Module Interface
+
+### Inputs
+
+| Signal | Width | Description |
+|---|---:|---|
+| `CLK` | 1 bit | System clock |
+| `Reset` | 1 bit | Synchronous active-high reset |
+| `BaudTick` | 1 bit | Timing pulse controlling reception |
+| `rx` | 1 bit | Incoming serial data input |
+
+### Outputs
+
+| Signal | Width | Description |
+|---|---:|---|
+| `rx_data` | 8 bits | Received parallel data |
+| `rx_done` | 1 bit | One-clock-cycle pulse indicating successful stop-bit detection |
+| `ParityError` | 1 bit | Indicates a parity mismatch |
+| `FrameError` | 1 bit | Indicates an invalid stop bit |
+
+## Finite State Machine (FSM)
+
+The receiver uses five states to control the reception process.
+
+| State | Operation |
+|---|---|
+| `IDLE` | Waits for the incoming line to go low |
+| `START` | Checks the start bit when `BaudTick` occurs |
+| `DATA` | Receives eight data bits, LSB first |
+| `PARITY` | Samples the parity bit and checks odd parity |
+| `STOP` | Checks the stop bit and updates the output data |
