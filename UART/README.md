@@ -98,15 +98,10 @@ The transmitter uses five states to control the transmission sequence.
 The parity bit is calculated using:
 
 ```verilog
-parity_bit <= ~(^tx_data);
+parity_bit <= ~(^tx_data);```
 
 
 # UART Receiver 
-
- tick-based reception timing
-- One-cycle reception completion pulse
-- Synchronous active-high reset
-
 ## UART Frame Format
 
 The receiver expects an 11-bit UART frame.
