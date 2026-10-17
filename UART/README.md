@@ -46,139 +46,56 @@ For the default configuration:
 
 
 
-UART Transmitter (Verilog)
+# UART Transmitter (Verilog)
 
-Overview
-
-This module implements the transmitter section of a UART (Universal Asynchronous Receiver/Transmitter) using Verilog HDL.
-
-
+## UART Frame Format
 
 Each transmitted frame consists of 11 bits.
 
-Field
+| Field | Size | Description |
+|---|---:|---|
+| Start Bit | 1 bit | Logic `0` |
+| Data Bits | 8 bits | Transmitted LSB first |
+| Parity Bit | 1 bit | Odd parity |
+| Stop Bit | 1 bit | Logic `1` |
 
-Size
+**Note:** The transmitter generates the parity bit using `~(^tx_data)`, which produces odd parity across the data and parity fields.
 
-Description
+## Module Interface
 
-Start Bit
+### Inputs
 
-1 bit
+| Signal | Width | Description |
+|---|---:|---|
+| `CLK` | 1 bit | System clock |
+| `Reset` | 1 bit | Synchronous active-high reset |
+| `BaudTick` | 1 bit | Timing pulse indicating the next UART bit interval |
+| `tx_start` | 1 bit | Request to start transmission |
+| `tx_data` | 8 bits | Parallel data to transmit |
 
-Logic 0
+### Outputs
 
-Data Bits
+| Signal | Width | Description |
+|---|---:|---|
+| `tx` | 1 bit | Serial transmission output |
+| `busy` | 1 bit | High while transmission is in progress |
+| `tx_done` | 1 bit | One-clock-cycle pulse when transmission completes |
 
-8 bits
-
-Transmitted LSB first
-
-Parity Bit
-
-1 bit
-
-Odd parity
-
-Stop Bit
-
-1 bit
-
-Logic 1
-
-Note: The transmitter generates the parity bit using ~(^tx_data), which produces odd parity for the complete frame when the receiver and transmitter use the same convention.
-
-Module Interface
-
-Inputs
-
-Signal
-
-Width
-
-Description
-
-CLK
-
-1 bit
-
-System clock
-
-Reset
-
-1 bit
-
-Synchronous active-high reset
-
-BaudTick
-
-1 bit
-
-Timing pulse indicating the next UART bit interval
-
-tx_start
-
-1 bit
-
-Request to start transmission
-
-tx_data
-
-8 bits
-
-Parallel data to transmit
-
-Outputs
-
-Signal
-
-Width
-
-Description
-
-tx
-
-1 bit
-
-Serial transmission output
-
-busy
-
-1 bit
-
-High while transmission is in progress
-
-tx_done
-
-1 bit
-
-One-clock-cycle pulse when transmission completes
-
-Finite State Machine (FSM)
+## Finite State Machine (FSM)
 
 The transmitter uses five states to control the transmission sequence.
 
-State
+| State | Operation |
+|---|---|
+| `IDLE` | Waits for `tx_start` and captures the input data |
+| `START` | Holds the start bit interval and then outputs the first data bit |
+| `DATA` | Transmits eight data bits, LSB first |
+| `PARITY` | Transmits the generated odd parity bit |
+| `STOP` | Provides the stop bit interval and signals completion |
 
-Operation
+## Parity Generation
 
-IDLE
+The parity bit is calculated using:
 
-Waits for tx_start and captures the input data
-
-START
-
-Transmits the start bit (0)
-
-DATA
-
-Transmits eight data bits, LSB first
-
-PARITY
-
-Transmits the generated odd parity bit
-
-STOP
-
-Transmits the stop bit (1) and signals completion
-
+```verilog
+parity_bit <= ~(^tx_data);
