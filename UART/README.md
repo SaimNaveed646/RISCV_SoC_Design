@@ -6,7 +6,7 @@ The Baud Generator is a Verilog hardware module used in a UART (Universal Asynch
 
 The `BaudTick` signal is used by the UART transmitter and receiver to control the timing of serial data transmission and reception.
 
-## 3. Module Interface
+## 2. Module Interface
 
 **Module Name:** `BaudGenerator`
 
@@ -23,7 +23,7 @@ The `BaudTick` signal is used by the UART transmitter and receiver to control th
 | `CLK_FREQ` | 50,000,000 Hz | System clock frequency |
 | `BAUD_RATE` | 9,600 bps | Desired UART baud rate |
 
-## 5. Timing Calculation
+## 3. Timing Calculation
 
 The approximate number of system clock cycles required for one UART bit period is:
 
