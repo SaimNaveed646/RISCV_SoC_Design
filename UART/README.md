@@ -1,3 +1,4 @@
+<img width="1600" height="900" alt="uart-1" src="https://github.com/user-attachments/assets/25f8c9c5-7b5b-497a-9194-bec6c283dc0a" />
 
 # UART Implementation in Verilog
 
