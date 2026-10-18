@@ -188,14 +188,6 @@ The simulation runs long enough for the configured UART transmission and recepti
 
 ## Expected Simulation Output
 
-```text
-Transmitted data = 0xa5
-Received data    = 0xa5
-ParityError      = 0
-FrameError       = 0
-TEST PASS
-```
-
 <img width="251" height="126" alt="image" src="https://github.com/user-attachments/assets/6b926667-1b39-4e13-9d4f-d1fcb6ef298c" />
 
 **Result: PASS**
