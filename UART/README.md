@@ -157,25 +157,45 @@ The receiver uses five states.
 | `PARITY` | Samples and checks the odd parity bit |
 | `STOP` | Checks the stop bit and updates the output data |
 
-### Parity Checking
 
-The expected odd parity bit is calculated using:
+# UART Testbench — Simulation and Verification
 
-```verilog
-~(^data_buffer)
+## Overview
+
+The testbench transmits an 8-bit data byte (`0xA5`), receives it through loopback communication, and compares the received data with the transmitted data. It also checks parity and framing error signals.
+
+## Test Configuration
+
+| Parameter | Value |
+|---|---|
+| Clock Frequency | 50 MHz |
+| Baud Rate | 9600 |
+| Clock Period | 20 ns |
+| Data Width | 8 bits |
+| Test Data | `8'hA5` |
+| Simulation Tool | Vivado XSim |
+| Verification Type | Loopback Test |
+
+
+```tcl
+run 2ms
 ```
 
-- `ParityError = 0`: Received parity matches the expected value.
-- `ParityError = 1`: A parity mismatch is detected.
+The simulation runs long enough for the configured UART transmission and reception to complete.
 
-### Frame Error Detection
-
-The receiver expects the stop bit to be logic `1`.
-
-- `FrameError = 0`: Valid stop bit.
-- `FrameError = 1`: Invalid stop bit.
-
-The current implementation updates `rx_data` and asserts `rx_done` when the stop bit is valid, even if a parity error was detected.
+<img width="790" height="455" alt="image" src="https://github.com/user-attachments/assets/d6ee9a2f-b172-436a-b90c-13fdb1d7ee83" />
 
 
+## Expected Simulation Output
 
+```text
+Transmitted data = 0xa5
+Received data    = 0xa5
+ParityError      = 0
+FrameError       = 0
+TEST PASS
+```
+
+<img width="251" height="126" alt="image" src="https://github.com/user-attachments/assets/6b926667-1b39-4e13-9d4f-d1fcb6ef298c" />
+
+**Result: PASS**
